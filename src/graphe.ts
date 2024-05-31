@@ -19,6 +19,13 @@ class Graphe {
             }
         }
     }
+    ajouterArête(de: number, à: number, poids: number): void {
+        if (!this.listeAdjacence.has(de)) {
+            this.listeAdjacence.set(de, new Map<number, number>());
+        }
+        this.listeAdjacence.get(de)!.set(à, poids);
+        this.nbArêtes++;
+    }
     
 }
 
