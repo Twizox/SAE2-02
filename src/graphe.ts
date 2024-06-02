@@ -2,13 +2,19 @@ import { readFileSync, writeFileSync } from "node:fs";
 
 class Graphe {
     private listeAdjacence: Map<number, Map<number, number>>;
+    private matriceAdjacence: number[][];
+    private estListeAdjacence: boolean;
     private nbSommets: number;
     private nbAretes: number;
 
+    constructor();
+    constructor(cheminFichier: string);
     constructor(cheminFichier?: string) {
         this.listeAdjacence = new Map<number, Map<number, number>>();
+        this.matriceAdjacence = [];
         this.nbSommets = 0;
         this.nbAretes = 0;
+        this.estListeAdjacence = true;
 
         if (cheminFichier) {
             this.chargerDepuisFichier(cheminFichier);
@@ -33,6 +39,16 @@ class Graphe {
         }
     }
 
+    redimensionner(nbSommets: number): void {
+        this.nbSommets = nbSommets;
+        if (!this.estListeAdjacence) {
+            this.matriceAdjacence = Array.from({ length: nbSommets }, () => Array(nbSommets).fill(Infinity));
+            for (let i = 0; i < nbSommets; i++) {
+                this.matriceAdjacence[i][i] = 0;
+            }
+        }
+    }
+
     supprimerArête(de: number, à: number): void {
         if (this.listeAdjacence.has(de)) {
             const voisins = this.listeAdjacence.get(de)!;
@@ -49,19 +65,24 @@ class Graphe {
         this.listeAdjacence.get(de)!.set(à, poids);
         this.nbAretes++;
     }
-    public obtenirNbSommets(): number {
+    
+    aArête(de: number, à: number): boolean {
+        return this.listeAdjacence.has(de) && this.listeAdjacence.get(de)!.has(à);
+    }
+
+    obtenirNbSommets(): number {
         return this.nbSommets;
     }
     
-    public obtenirNbAretes(): number {
+    obtenirNbAretes(): number {
         return this.nbAretes;
     }
     
-    public obtenirSuccesseurs(sommet: number): number[] {
+    obtenirSuccesseurs(sommet: number): number[] {
         return Array.from(this.listeAdjacence.get(sommet)?.keys() || []);
     }
     
-    public obtenirPredecesseurs(sommet: number): number[] {
+    obtenirPredecesseurs(sommet: number): number[] {
         const predecesseurs: number[] = [];
         for (const [de, voisins] of this.listeAdjacence.entries()) {
             if (voisins.has(sommet)) {
@@ -69,6 +90,12 @@ class Graphe {
             }
         }
         return predecesseurs;
+    }
+
+    obtenirVoisins(sommet: number): number[] {
+        const successeurs = this.obtenirSuccesseurs(sommet);
+        const prédécesseurs = this.obtenirPredecesseurs(sommet);
+        return Array.from(new Set([...successeurs, ...prédécesseurs]));
     }
   
     
