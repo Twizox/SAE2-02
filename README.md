@@ -51,7 +51,7 @@ Le programme affiche un menu principal avec plusieurs options. Voici les options
 16. Tester si un arc (i, j) existe dans le graphe : Vérifie l'existence d'un arc entre deux sommets donnés.
 17. Quitter : Quitte le programme.
 
-##Instructions pour chaque option
+## Instructions pour chaque option
 
 ### Charger un graphe depuis un fichier
 Entrez le chemin complet du fichier contenant le graphe à charger.
