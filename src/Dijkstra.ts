@@ -6,6 +6,9 @@ interface Resultat {
 }
 
 function dijkstra(graphe: Graphe, sommetDepart: number): Resultat {
+    if (sommetDepart < 0 || sommetDepart >= graphe.obtenirNbSommets()) {
+        throw new Error("Sommet de départ invalide");
+    }
     const distances = new Map<number, number>();
     const predecesseurs = new Map<number, number>();
     const nonVisites = new Set<number>();
@@ -49,4 +52,5 @@ function dijkstra(graphe: Graphe, sommetDepart: number): Resultat {
     return { distances, predecesseurs };
 }
 
-export { dijkstra, Resultat };
+export { dijkstra };
+export type{  Resultat };
