@@ -11,8 +11,7 @@ Ce projet permet de gérer des graphes à l'aide de différentes fonctionnalité
 1. Clonez le dépôt :
 
     ```bash
-    git clone <URL-du-dépôt>
-    cd <nom-du-dépôt>
+    git clone https://github.com/Twizox/SAE2-02.git
     ```
 
 2. Installez les dépendances (si nécessaire) :
