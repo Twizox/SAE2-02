@@ -27,7 +27,7 @@ Ce projet permet de gérer des graphes à l'aide de différentes fonctionnalité
 Pour exécuter le programme, utilisez la commande suivante :
 
 ```bash
-npx ts-node <nom-du-fichier>.ts
+deno run src/main.ts
 ```
 
 ## Menu Principal
