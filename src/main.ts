@@ -17,6 +17,7 @@ async function menuPrincipal() {
     let creeManuellement = false;
 
     while (true) {
+        console.clear(); // Efface la console au début de chaque itération
         console.log("Choisissez une option :");
         console.log("1. Charger un graphe depuis un fichier");
         console.log("2. Créer un graphe manuellement");
@@ -25,8 +26,15 @@ async function menuPrincipal() {
         console.log("5. Modifier une arête");
         console.log("6. Afficher la liste d'adjacence");
         console.log("7. Afficher la matrice d'adjacence");
-        console.log("8. Redimensionner le graphe");
+        console.log("8. Redimensionner le graphe (ajouter ou enlever des sommets)");
         console.log("9. Exécuter l'algorithme de Dijkstra");
+        console.log("10. Récupérer les voisins d'un sommet");
+        console.log("11. Récupérer les successeurs d'un sommet");
+        console.log("12. Récupérer les prédécesseurs d'un sommet");
+        console.log("13. Récupérer le poids d'un arc (i, j)");
+        console.log("14. Récupérer le nombre de sommets");
+        console.log("15. Récupérer le nombre d'arcs");
+        console.log("16. Tester si un arc (i, j) existe dans le graphe");
         console.log("0. Quitter");
         const choix = prompt("Entrez votre choix : ");
 
@@ -55,7 +63,7 @@ async function menuPrincipal() {
                     const autre = prompt("Ajouter un autre arc ? (oui ou non) : ");
                     ajouterAutre = autre?.toLowerCase() === "oui";
                 }
-                graphe.redimensionner(Math.max(...sommets) + 1); // Assurez-vous que le nombre de sommets est correct
+                graphe.redimensionner("ajout", Math.max(...sommets) + 1); // Assurez-vous que le nombre de sommets est correct
                 console.log("Graphe créé avec succès !");
                 const sauvegarderGrapheCreation = prompt("Voulez-vous sauvegarder le graphe maintenant ? (oui ou non) : ");
                 if (sauvegarderGrapheCreation?.toLowerCase() === "oui") {
@@ -141,9 +149,16 @@ async function menuPrincipal() {
                     console.log("Veuillez d'abord charger ou créer un graphe.");
                     break;
                 }
-                const nouveauNbSommets = parseInt(prompt("Entrez le nouveau nombre de sommets : ")!);
-                graphe.redimensionner(nouveauNbSommets);
-                console.log("Graphe redimensionné avec succès !");
+                const action = prompt("Voulez-vous ajouter ou enlever des sommets ? (ajout/retrait) : ")!.toLowerCase();
+                const nbSom = parseInt(prompt("Entrez le nombre de sommets : ")!);
+                if (action === "ajout" || action === "retrait") {
+                    graphe.redimensionner(action as "ajout" | "retrait", nbSom);
+                    const cheminSauvegarde = prompt("Entrez le chemin pour sauvegarder le fichier du graphe : ");
+                    graphe.sauvegarderDansFichier(cheminSauvegarde!);
+                    console.log("Graphe redimensionné et sauvegardé avec succès !");
+                } else {
+                    console.log("Action non reconnue. Veuillez entrer 'ajout' ou 'retrait'.");
+                }
                 break;
             case "9":
                 if (!graphe) {
@@ -154,6 +169,69 @@ async function menuPrincipal() {
                 const resultat = dijkstra(graphe, sommetDepart);
                 console.log('Distances :', resultat.distances);
                 console.log('Prédécesseurs :', resultat.predecesseurs);
+                break;
+            case "10":
+                if (!graphe) {
+                    console.log("Veuillez d'abord charger ou créer un graphe.");
+                    break;
+                }
+                const sommetVoisins = parseInt(prompt("Entrez le sommet pour obtenir les voisins : ")!);
+                const voisins = graphe.obtenirVoisins(sommetVoisins);
+                console.log(`Voisins du sommet ${sommetVoisins} :`, voisins);
+                break;
+            case "11":
+                if (!graphe) {
+                    console.log("Veuillez d'abord charger ou créer un graphe.");
+                    break;
+                }
+                const sommetSuccesseurs = parseInt(prompt("Entrez le sommet pour obtenir les successeurs : ")!);
+                const successeurs = graphe.obtenirSuccesseurs(sommetSuccesseurs);
+                console.log(`Successeurs du sommet ${sommetSuccesseurs} :`, successeurs);
+                break;
+            case "12":
+                if (!graphe) {
+                    console.log("Veuillez d'abord charger ou créer un graphe.");
+                    break;
+                }
+                const sommetPredecesseurs = parseInt(prompt("Entrez le sommet pour obtenir les prédécesseurs : ")!);
+                const predecesseurs = graphe.obtenirPredecesseurs(sommetPredecesseurs);
+                console.log(`Prédécesseurs du sommet ${sommetPredecesseurs} :`, predecesseurs);
+                break;
+            case "13":
+                if (!graphe) {
+                    console.log("Veuillez d'abord charger ou créer un graphe.");
+                    break;
+                }
+                const sommetSourcePoids = parseInt(prompt("Entrez le sommet source : ")!);
+                const sommetDestPoids = parseInt(prompt("Entrez le sommet destination : ")!);
+                const poidsArete = graphe.obtenirPoidsArete(sommetSourcePoids, sommetDestPoids);
+                console.log(`Poids de l'arc (${sommetSourcePoids}, ${sommetDestPoids}) :`, poidsArete);
+                break;
+            case "14":
+                if (!graphe) {
+                    console.log("Veuillez d'abord charger ou créer un graphe.");
+                    break;
+                }
+                const nbSommets = graphe.obtenirNbSommets();
+                console.log(`Nombre de sommets :`, nbSommets);
+                break;
+            case "15":
+                if (!graphe) {
+                    console.log("Veuillez d'abord charger ou créer un graphe.");
+                    break;
+                }
+                const nbAretes = graphe.obtenirNbAretes();
+                console.log(`Nombre d'arcs :`, nbAretes);
+                break;
+            case "16":
+                if (!graphe) {
+                    console.log("Veuillez d'abord charger ou créer un graphe.");
+                    break;
+                }
+                const sommetSourceTest = parseInt(prompt("Entrez le sommet source : ")!);
+                const sommetDestTest = parseInt(prompt("Entrez le sommet destination : ")!);
+                const arcExiste = graphe.arcExiste(sommetSourceTest, sommetDestTest);
+                console.log(`L'arc (${sommetSourceTest}, ${sommetDestTest}) existe :`, arcExiste);
                 break;
             case "0":
                 if (creeManuellement && graphe) {
